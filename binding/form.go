@@ -4,7 +4,9 @@
 
 package binding
 
-import "net/http"
+import (
+	"net/http"
+)
 
 const defaultMemory = 32 * 1024 * 1024
 
@@ -53,11 +55,7 @@ func (formMultipartBinding) Bind(req *http.Request, obj interface{}) error {
 	if err := req.ParseMultipartForm(defaultMemory); err != nil {
 		return err
 	}
-	if err := mapForm(obj, req.MultipartForm.Value); err != nil {
-		return err
-	}
-
-	if err := mapFiles(obj, req); err != nil {
+	if err := mappingByPtr(obj, (*multipartRequest)(req), "form"); err != nil {
 		return err
 	}
 
